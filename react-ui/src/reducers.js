@@ -37,7 +37,7 @@ function sideBarOpen(state = false, action) {
     return !state;
   case SET_USER:
   case LOGIN_USER:
-    return true;
+    return false;
   case LOGOUT_USER:
   case DELETE_ACCOUNT_SUCCESS:
     return false;

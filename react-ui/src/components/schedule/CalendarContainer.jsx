@@ -25,13 +25,12 @@ import { Calendar, Event } from './calendar';
 import { addDays, diffDays, startOfDay } from './calendar/dateUtils';
 import { objectEquals } from '../../utils/arrays';
 import { red, green2, blueGreen, mediumBlue } from '../../constants/Colours';
-
-const referenceDate = new Date(2017, 1, 1);
+import { MODE_DAY, MODE_THREE_DAYS, MODE_WEEK, REFERENCE_DATE, USER, FRIEND, SHARED } from './constants';
 
 const modeNbOfDaysMap = {
-  day: 1,
-  '3days': 3,
-  week: 7
+  [MODE_DAY]: 1,
+  [MODE_THREE_DAYS]: 3,
+  [MODE_WEEK]: 7
 }
 
 const styles = {
@@ -90,13 +89,11 @@ const styles = {
     fontSize: 16,
     width: 170,
   },
+  calendar: {
+    height: '100%',
+    width: '100%',
+  }
 };
-
-
-// Types of calendar events
-const USER = 0;
-const FRIEND = 1;
-const SHARED = 2;
 
 const parseCourses = (courses, isFriends) => {
   const classesArr = [];
@@ -304,13 +301,17 @@ export default class CalendarContainer extends Component {
     this.setDate(date);
   }
 
-  setDate = (date) =>  this.setState({ date });
+  setDate = (date) => this.setState({ date });
 
   onChangeIndex = (index) => {
-    const date = addDays(referenceDate, index * modeNbOfDaysMap[this.getMode()]);
+    const date = addDays(REFERENCE_DATE, index * modeNbOfDaysMap[this.getMode()]);
     this.unControlledDate = date;
     this.setDate(date);
+    console.log({ date });
   }
+
+  handleChangeIndexRight = () => this.onChangeIndex(this.getIndex() + 1);
+  handleChangeIndexLeft = () => this.onChangeIndex(this.getIndex() - 1);
 
   getMode = () => this.state.mode == null ? 'day' : this.state.mode;
 
@@ -331,7 +332,7 @@ export default class CalendarContainer extends Component {
 
   getDate = () => this.state.date != null ? this.state.date : this.unControlledDate;
 
-  getIndex = () => Math.floor(diffDays(startOfDay(this.getDate()), referenceDate) / modeNbOfDaysMap[this.getMode()]);
+  getIndex = () => Math.floor(diffDays(startOfDay(this.getDate()), REFERENCE_DATE) / modeNbOfDaysMap[this.getMode()]);
 
   openMenu = (ev) => {
     ev.preventDefault();
@@ -412,12 +413,14 @@ export default class CalendarContainer extends Component {
                 <FlatButton
                   style={ styles.arrows }
                   onClick={ () => this.onChangeIndex(this.getIndex() - 1) }
+                  // onClick={ () => this.handleChangeIndexLeft() }
                 >
                   <LeftIcon color='grey' style={{ margin: 'auto' }} />
                 </FlatButton>
                 <FlatButton
                   style={ styles.arrows }
                   onClick={ () => this.onChangeIndex(this.getIndex() + 1) }
+                  // onClick={ () => this.handleChangeIndexRight() }
                 >
                   <RightIcon color='grey' style={{ margin: 'auto' }} />
                 </FlatButton>
@@ -511,9 +514,9 @@ export default class CalendarContainer extends Component {
           value={ this.state.date }
         />
         <Calendar
-          style={{ height: '100%', width: '100%' }}
+          style={ styles.calendar }
           date={ this.state.date }
-          referenceDate={ referenceDate }
+          referenceDate={ REFERENCE_DATE }
           mode={ this.state.mode }
           getIndex={ this.getIndex }
         >

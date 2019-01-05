@@ -23,6 +23,7 @@
     "react-responsive": "^6.0.0",
     "react-router-dom": "^4.3.1",
     "react-star-ratings": "^2.3.0",
+    "react-swipe-events": "^1.0.3",
     "react-swipeable-views": "^0.13.0",
     "react-toastify": "^4.4.0",
     "react-tooltip": "^3.9.0",

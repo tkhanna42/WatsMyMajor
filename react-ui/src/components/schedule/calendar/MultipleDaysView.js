@@ -4,6 +4,8 @@ import verticalHours from './verticalHours';
 import renderDayEvents from './DayEvents';
 import DayHeader from './DayHeader';
 
+// import { arrayEquals } from '../../../utils/arrays';
+
 const height = 1800;
 const firstColumnWidth = '60px';
 const headerHeight = '60px';
@@ -49,16 +51,15 @@ const styles = {
     left: firstColumnWidth,
     top: '0'
   },
-  bodyContainer: (isScrollDisable) => ({
+  bodyContainer: {
     height: `calc(100% - ${headerHeight})`,
     position: 'absolute',
     left: '0',
     right: '0',
     top: headerHeight,
     bottom: '0',
-    overflowY: isScrollDisable ? 'hidden' : 'auto',
     overflowX: 'hidden'
-  }),
+  },
   hoursContainer: {
     height,
     position: 'absolute',
@@ -100,21 +101,63 @@ const renderDays = (dates, children) => {
   ));
 }
 
+
+// function getTimeOrDefault(date) {
+//   return date == null ? 0 : date.getTime();
+// }
+
 export default class MultipleDaysView extends Component {
   static propTypes = {
     dates: PropTypes.array.isRequired,
     scrollPosition: PropTypes.number.isRequired,
     onScrollChange: PropTypes.func.isRequired,
-    isScrollDisable: PropTypes.bool.isRequired,
     children: PropTypes.node.isRequired
   };
+
+  constructor(props) {
+    // console.log({ scrollPosition: props.scrollPosition });
+    super(props);
+    this.scrollViewer = React.createRef();
+  }
+
+
+  // componentDidUpdate = (prevProps) => {
+  //   console.log(`componentDidUpdate`, {prevProps});
+  //   Object.keys(this.props).forEach((key) => {
+  //     const propKey = this.props[key];
+  //     const prevPropKey = prevProps[key];
+  //     if (prevPropKey !== propKey) {
+  //       if (key === "children") {
+  //         console.log({ key2: !arrayEquals(prevProps.children, this.props.children) });
+  //       }
+  //       console.log( { "diff": key, prevPropKey, propKey } );
+  //     }
+  //   });
+
+  // }
+
+  // shouldComponentUpdate = (nextProps) => {
+  //   const shouldUpdate = nextProps.dates.every((date, idx) => getTimeOrDefault(date) !== getTimeOrDefault(this.props.dates[idx]));
+
+  //   console.log("shouldComponentUpdate", shouldUpdate, nextProps.dates, this.props.dates);
+
+  //   return shouldUpdate;
+
+  // }
+  
+  componentDidMount = () => {
+    this.scrollViewer.current.scrollTop = this.props.scrollPosition;
+  }
+
+  componentWillUnmount = () => {
+    const scrollPosition = this.scrollViewer.current.scrollTop;
+    // console.log("componentWillUnmount", scrollPosition);
+    this.props.onScrollChange(scrollPosition);
+  }
 
   render() {
     const {
       dates,
-      scrollPosition,
-      onScrollChange,
-      isScrollDisable,
       children
     } = this.props;
 
@@ -127,14 +170,8 @@ export default class MultipleDaysView extends Component {
           }
         </div>
         <div
-          ref={ elem => {
-            if(elem != null) {
-              this.scrollViewer = elem;
-              elem.scrollTop = scrollPosition;
-            }
-          } }
-          onTouchStart={ (e) => setTimeout(() => onScrollChange(this.scrollViewer.scrollTop), 100) }
-          style={ styles.bodyContainer(isScrollDisable) }>
+          ref={ this.scrollViewer }
+          style={ styles.bodyContainer }>
           <div style={ styles.hoursContainer }>
             {
               verticalHours()
