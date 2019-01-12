@@ -7,8 +7,8 @@ import FlatButton from 'material-ui/FlatButton';
 import SearchBar from './SearchBar';
 import LogoutIcon from 'material-ui/svg-icons/action/exit-to-app';
 import LoginIcon from 'material-ui/svg-icons/action/open-in-browser';
-import logo from '../images/logo.png';
-import { darkGrey, white, blueGreen, blueGreenHighlight } from '../constants/Colours';
+import logo from 'images/logo.png';
+import { darkGrey, white, blueGreen, blueGreenHighlight } from 'constants/Colours';
 
 const styles = {
   divContainer: {

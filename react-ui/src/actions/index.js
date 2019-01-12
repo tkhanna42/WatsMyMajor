@@ -1,5 +1,5 @@
 import { RSAA } from 'redux-api-middleware';
-import { getCookie, deleteCookie } from './utils/cookies';
+import { getCookie, deleteCookie } from 'utils/cookies';
 
 /*
  * action types
